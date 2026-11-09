@@ -1,0 +1,407 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Blog DSDM</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: cabeçalho do blog, menu de posts em linha, um post por vez em coluna de leitura de ~68ch.
+   Tokens: papel frio, tinta azul-petróleo, acento azul; cores MoSCoW são semânticas, separadas do acento. */
+:root {
+  --bg: #F5F6F8;
+  --surface: #FFFFFF;
+  --fg: #16202A;
+  --muted: #55606C;
+  --line: #D9DEE4;
+  --accent: #1B5EC4;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #E4EEFB;
+  --must: #B3261E;
+  --must-soft: #FBE7E5;
+  --should: #8F5200;
+  --should-soft: #FCEFD8;
+  --could: #0B6E5B;
+  --could-soft: #DDF3EC;
+  --wont: #55606C;
+  --wont-soft: #E9ECF0;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F161D; --surface: #17212B; --fg: #E6EBF0; --muted: #9AA6B2; --line: #2A3743;
+    --accent: #6FA3F0; --accent-ink: #0F161D; --accent-soft: #1B2B42;
+    --must: #F08A82; --must-soft: #3A1F1E; --should: #E8B35C; --should-soft: #38290F;
+    --could: #5CC8AE; --could-soft: #11302A; --wont: #A0ABB7; --wont-soft: #232D37;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F161D; --surface: #17212B; --fg: #E6EBF0; --muted: #9AA6B2; --line: #2A3743;
+  --accent: #6FA3F0; --accent-ink: #0F161D; --accent-soft: #1B2B42;
+  --must: #F08A82; --must-soft: #3A1F1E; --should: #E8B35C; --should-soft: #38290F;
+  --could: #5CC8AE; --could-soft: #11302A; --wont: #A0ABB7; --wont-soft: #232D37;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  padding-block: 0 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 760px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; text-wrap: balance; letter-spacing: -0.01em; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+/* cabeçalho */
+.site-head { padding-block: 36px 20px; display: grid; gap: 6px; }
+.site-head .brand { font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, 6vw, 2.8rem); letter-spacing: -0.02em; color: var(--fg); text-decoration: none; }
+.site-head p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.menu { display: flex; flex-wrap: wrap; gap: 8px; padding-block: 14px 18px; border-block: 1px solid var(--line); margin-bottom: 32px; }
+.menu a {
+  font-size: 0.88rem; font-weight: 500; text-decoration: none; color: var(--fg);
+  padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface);
+}
+.menu a[aria-current="page"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+/* posts */
+.eyebrow { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 0 0 10px; }
+article h1 { font-size: clamp(1.9rem, 5vw, 2.5rem); margin: 0 0 18px; }
+article h2 { font-size: 1.45rem; margin: 36px 0 10px; }
+article h3 { font-size: 1.1rem; margin: 22px 0 6px; }
+article p { margin: 0 0 16px; max-width: 68ch; }
+article ul, article ol { padding-left: 1.3em; margin: 0 0 18px; max-width: 68ch; }
+article li { margin-bottom: 8px; }
+.lead { font-size: 1.15rem; color: var(--fg); }
+.callout { background: var(--accent-soft); border-radius: 10px; padding: 16px 18px; margin: 24px 0; max-width: 68ch; }
+.callout p { margin: 0; }
+.callout strong { font-family: var(--font-display); }
+
+/* home */
+.post-list { display: grid; gap: 12px; margin: 24px 0 0; padding: 0; list-style: none; }
+.post-list a { display: block; text-decoration: none; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+.post-list a:hover { border-color: var(--accent); }
+.post-list strong { display: block; font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 2px; }
+.post-list span { color: var(--muted); font-size: 0.95rem; }
+
+/* princípios */
+.principles { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: p; max-width: none; }
+.principles li { counter-increment: p; display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin: 0; }
+.principles li::before { content: counter(p); font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; color: var(--accent); line-height: 1.2; }
+.principles b { display: block; font-family: var(--font-display); }
+.principles span { color: var(--muted); font-size: 0.97rem; }
+
+/* fases */
+.phases { list-style: none; padding: 0; margin: 0 0 24px; display: grid; gap: 0; counter-reset: f; max-width: none; }
+.phases li { counter-increment: f; position: relative; padding: 0 0 22px 52px; margin: 0; }
+.phases li::before { content: counter(f); position: absolute; left: 0; top: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-family: var(--font-display); font-weight: 700; display: grid; place-items: center; }
+.phases li::after { content: ""; position: absolute; left: 16px; top: 38px; bottom: 4px; width: 2px; background: var(--line); }
+.phases li:last-child::after { display: none; }
+.phases b { font-family: var(--font-display); display: block; font-size: 1.08rem; }
+.phases .tag { display: inline-block; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; margin-top: 4px; }
+
+/* MoSCoW */
+.moscow { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 18px 0 26px; }
+.moscow div { border-radius: 10px; padding: 14px 16px; min-width: 0; }
+.moscow b { display: block; font-family: var(--font-display); font-size: 1.15rem; }
+.moscow small { display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+.moscow p { margin: 0; font-size: 0.95rem; color: var(--fg); }
+.m-must { background: var(--must-soft); } .m-must b, .m-must small { color: var(--must); }
+.m-should { background: var(--should-soft); } .m-should b, .m-should small { color: var(--should); }
+.m-could { background: var(--could-soft); } .m-could b, .m-could small { color: var(--could); }
+.m-wont { background: var(--wont-soft); } .m-wont b, .m-wont small { color: var(--wont); }
+
+/* timebox */
+.timebox { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; margin: 18px 0 24px; }
+.timebox .bar { display: flex; height: 18px; border-radius: 4px; overflow: hidden; margin: 10px 0 8px; }
+.timebox .bar i { display: block; }
+.timebox .b1 { flex: 2; background: var(--accent); }
+.timebox .b2 { flex: 5; background: color-mix(in srgb, var(--accent) 55%, var(--surface)); }
+.timebox .b3 { flex: 2; background: color-mix(in srgb, var(--accent) 25%, var(--surface)); }
+.timebox .legend { display: flex; justify-content: space-between; gap: 8px; font-size: 0.82rem; color: var(--muted); flex-wrap: wrap; }
+.timebox p { margin: 0; font-size: 0.95rem; }
+
+/* tabela */
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); margin: 18px 0 24px; }
+table { border-collapse: collapse; width: 100%; min-width: 420px; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child th, tr:last-child td { border-bottom: 0; }
+th { width: 30%; font-family: var(--font-display); font-weight: 600; background: var(--accent-soft); }
+
+/* papéis */
+.roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; padding: 0; list-style: none; max-width: none; }
+.roles li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 0; min-width: 0; font-size: 0.95rem; }
+.roles b { display: block; font-family: var(--font-display); }
+
+.two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 8px 0 8px; }
+.two-col > div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; min-width: 0; }
+.two-col h3 { margin-top: 0; }
+.two-col ul { margin-bottom: 0; padding-left: 1.2em; }
+
+.refs { list-style: none; padding: 0; max-width: none; }
+.refs li { margin-bottom: 14px; font-size: 0.95rem; overflow-wrap: anywhere; }
+
+.pager { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line); }
+.pager a { text-decoration: none; font-weight: 500; max-width: 48%; }
+.site-foot { margin-top: 56px; color: var(--muted); font-size: 0.85rem; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header class="site-head">
+    <a class="brand" href="#inicio">Blog DSDM</a>
+    <p>Equipe 6 · Engenharia de Software II · IFPR Umuarama · Tecnologia em Análise e Desenvolvimento de Sistemas</p>
+  </header>
+  <nav class="menu" id="menu" aria-label="Posts"></nav>
+
+  <main>
+    <article data-view="inicio" data-title="Início" data-summary="Quem somos e o que você vai encontrar neste blog.">
+      <p class="eyebrow">Atividade 2 · 3º trimestre</p>
+      <h1>Desenvolvimento ágil com DSDM</h1>
+      <p class="lead">Este blog explica o DSDM (Dynamic Systems Development Method), um dos métodos ágeis mais estruturados para conduzir projetos de software, do início do projeto até a entrega.</p>
+      <p>Ele foi feito pela Equipe 6 da turma do 2º ano de Tecnologia em Análise e Desenvolvimento de Sistemas do IFPR, campus Umuarama, para a disciplina de Engenharia de Software II, da professora Márcia Cristina Dadalto Pascutti.</p>
+      <p><strong>Equipe:</strong> Cauã Torbes Vieira e Matheus de Castro.</p>
+      <p>Os textos foram escritos a partir da leitura de várias fontes, que estão listadas na página de referências. Escolha um post abaixo ou siga a ordem do menu.</p>
+      <ul class="post-list" id="home-list"></ul>
+    </article>
+
+    <article data-view="metodos-ageis" data-title="Métodos ágeis em poucas palavras" data-summary="De onde vem a ideia de agilidade e o que diz o Manifesto Ágil.">
+      <p class="eyebrow">Contexto</p>
+      <h1>Métodos ágeis em poucas palavras</h1>
+      <p class="lead">Antes de falar do DSDM, vale entender o problema que os métodos ágeis tentam resolver.</p>
+      <p>Nos modelos tradicionais, como o cascata, as fases acontecem em sequência: levantam-se todos os requisitos, depois projeta-se, depois programa-se e só no fim o cliente vê o resultado. Se algo muda no meio do caminho, o custo de corrigir é alto.</p>
+      <p>Em 2001, um grupo de 17 profissionais de engenharia de software, cansados desse formato, publicou o Manifesto Ágil. Ele não define um método. Define quatro valores que orientam todos os métodos ágeis:</p>
+      <ul>
+        <li>indivíduos e interações valem mais do que processos e ferramentas;</li>
+        <li>software funcionando vale mais do que documentação extensa;</li>
+        <li>colaboração com o cliente vale mais do que negociação de contratos;</li>
+        <li>responder a mudanças vale mais do que seguir um plano.</li>
+      </ul>
+      <p>Na prática, isso significa entregar em partes pequenas, mostrar o resultado cedo, ouvir o feedback e ajustar o rumo. Scrum, Extreme Programming, Crystal, FDD e o próprio DSDM são exemplos de métodos que seguem esse espírito, cada um com suas regras.</p>
+      <div class="callout"><p><strong>Onde o DSDM entra:</strong> ele surgiu antes do Manifesto, em 1994, e é considerado um dos primeiros métodos ágeis. Sua marca é combinar flexibilidade com governança: há liberdade para mudar o escopo, mas dentro de regras claras de prazo, custo e qualidade.</p></div>
+    </article>
+
+    <article data-view="o-que-e-dsdm" data-title="O que é o DSDM" data-summary="Origem, objetivo e a ideia central do método.">
+      <p class="eyebrow">Conceito</p>
+      <h1>O que é o DSDM</h1>
+      <p class="lead">DSDM é a sigla de Dynamic Systems Development Method, em português, Método de Desenvolvimento de Sistemas Dinâmicos.</p>
+      <h2>Origem</h2>
+      <p>O método nasceu em 1994, quando gerentes de projeto que trabalhavam com RAD (Rapid Application Development, ou desenvolvimento rápido de aplicações) perceberam que a rapidez sozinha não bastava. Faltavam disciplina e governança. Um consórcio de empresas reuniu as melhores práticas da época e criou uma estrutura comum, mais organizada, para o desenvolvimento iterativo.</p>
+      <h2>Como o método evoluiu</h2>
+      <p>Com o tempo, o DSDM passou por revisões. Uma delas ficou conhecida como DSDM Atern. Em 2014, o método voltou a se chamar apenas DSDM e passou a ser descrito no <em>DSDM Agile Project Framework</em>, mantido pelo Agile Business Consortium. Essa versão também serve de base para a certificação AgilePM.</p>
+      <h2>O que o torna diferente</h2>
+      <p>Muitos métodos ágeis cuidam só da construção do produto. O DSDM cobre o projeto inteiro: escolha do projeto, viabilidade, desenvolvimento, entrega e acompanhamento depois da entrega. Por isso ele traz papéis, produtos e práticas de gerenciamento já definidos. Também não se limita a software, pois pode ser aplicado a qualquer desenvolvimento de produto.</p>
+      <div class="callout"><p><strong>A ideia central:</strong> prazo, custo e qualidade ficam fixos, e o conjunto de funcionalidades é o que se ajusta. Se o tempo aperta, as funcionalidades menos importantes saem da entrega, e as essenciais continuam garantidas.</p></div>
+      <p>O DSDM também pode ser combinado com outras abordagens. É comum usá-lo como camada de gestão do projeto enquanto a equipe constrói o produto com Scrum.</p>
+    </article>
+
+    <article data-view="principios" data-title="Os 8 princípios" data-summary="A filosofia do método resumida em oito princípios.">
+      <p class="eyebrow">Filosofia</p>
+      <h1>Os 8 princípios do DSDM</h1>
+      <p class="lead">Os princípios descrevem a atitude que a equipe precisa ter. O método considera que ignorar qualquer um deles aumenta o risco de o projeto falhar.</p>
+      <ol class="principles">
+        <li><div><b>Foco na necessidade do negócio</b><span>O projeto existe para entregar valor. Cada decisão é avaliada pelo benefício que traz ao negócio.</span></div></li>
+        <li><div><b>Entregar no prazo</b><span>Prazos são respeitados. Em vez de atrasar, a equipe ajusta o escopo, com apoio de timeboxing e MoSCoW.</span></div></li>
+        <li><div><b>Colaborar</b><span>Equipe técnica, usuários e patrocinadores trabalham juntos e têm poder de decisão.</span></div></li>
+        <li><div><b>Nunca comprometer a qualidade</b><span>O nível de qualidade é combinado no início, e testes e revisões acontecem ao longo de todo o trabalho.</span></div></li>
+        <li><div><b>Construir de forma incremental a partir de bases sólidas</b><span>Primeiro se entende o essencial do negócio e da solução. Depois o produto cresce em partes entregues.</span></div></li>
+        <li><div><b>Desenvolver de forma iterativa</b><span>A solução é refinada em ciclos, com feedback frequente. Acertar tudo na primeira vez não é a meta.</span></div></li>
+        <li><div><b>Comunicar de forma contínua e clara</b><span>Reuniões curtas, workshops, protótipos e demonstrações mantêm todos alinhados.</span></div></li>
+        <li><div><b>Demonstrar controle</b><span>O andamento é visível e acompanhado, com planos que se mantêm atualizados.</span></div></li>
+      </ol>
+    </article>
+
+    <article data-view="fases" data-title="Fases do ciclo de vida" data-summary="Do pré-projeto ao pós-projeto, em seis etapas.">
+      <p class="eyebrow">Processo</p>
+      <h1>Fases do ciclo de vida</h1>
+      <p class="lead">O DSDM organiza o trabalho em três blocos: pré-projeto, ciclo de vida do projeto e pós-projeto. O bloco do meio é o mais detalhado.</p>
+      <ol class="phases">
+        <li><b>Pré-projeto</b>Escolhe-se o projeto certo e confirma-se que ele tem apoio, orçamento e pessoas disponíveis.<br><span class="tag">Antes do projeto</span></li>
+        <li><b>Viabilidade</b>Verifica-se se existe uma solução possível, tanto técnica quanto de negócio. É uma fase curta, que evita investir em algo inviável.<br><span class="tag">Ciclo de vida</span></li>
+        <li><b>Fundamentos</b>Define-se o entendimento do negócio, os requisitos em alto nível e a forma de entregar. O objetivo é ter base suficiente para começar, sem detalhar tudo.<br><span class="tag">Ciclo de vida</span></li>
+        <li><b>Desenvolvimento evolutivo</b>A solução é construída em timeboxes. Em cada um há exploração, em que os requisitos são descobertos e refinados com protótipos, e engenharia, em que a parte é construída e testada.<br><span class="tag">Ciclo de vida</span></li>
+        <li><b>Implantação</b>A solução é colocada em uso. Isso pode acontecer em partes, a cada incremento aprovado.<br><span class="tag">Ciclo de vida</span></li>
+        <li><b>Pós-projeto</b>Avaliam-se os benefícios alcançados e dá-se suporte, manutenção e evolução da solução.<br><span class="tag">Depois do projeto</span></li>
+      </ol>
+      <div class="callout"><p><strong>Nomes antigos:</strong> em materiais mais antigos, as fases do projeto aparecem como estudo de viabilidade, estudo do negócio, iteração do modelo funcional, iteração de projeto e construção, e implantação. São as mesmas ideias, com outros nomes.</p></div>
+    </article>
+
+    <article data-view="tecnicas-e-papeis" data-title="Técnicas e papéis" data-summary="Timeboxing, MoSCoW, protótipos e quem faz o quê.">
+      <p class="eyebrow">Prática</p>
+      <h1>Técnicas e papéis</h1>
+      <h2>Timeboxing</h2>
+      <p>Timeboxing é dividir o projeto em janelas de tempo fixas. Cada janela tem data de entrega e orçamento definidos, e um conjunto de requisitos escolhido para ela. Normalmente duram poucas semanas. O prazo não se move, então o que se ajusta é o conteúdo.</p>
+      <div class="timebox" role="img" aria-label="Exemplo de timebox dividido em exploração, engenharia e refinamento">
+        <p><strong>Exemplo de um timebox</strong></p>
+        <div class="bar"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+        <div class="legend"><span>Investigar</span><span>Construir e testar</span><span>Refinar</span></div>
+        <p style="margin-top:10px;color:var(--muted)">As proporções são ilustrativas. O fim da janela é fixo, e o que não couber vai para o próximo ciclo ou sai do escopo.</p>
+      </div>
+      <h2>MoSCoW</h2>
+      <p>É a técnica de priorização do DSDM. Cada requisito entra em uma de quatro categorias, e as letras O formam só a pronúncia da sigla.</p>
+      <div class="moscow">
+        <div class="m-must"><small>M</small><b>Must have</b><p>Essencial. Sem isso, a entrega não tem valor.</p></div>
+        <div class="m-should"><small>S</small><b>Should have</b><p>Importante, mas há alternativa temporária.</p></div>
+        <div class="m-could"><small>C</small><b>Could have</b><p>Desejável. Entra se sobrar tempo.</p></div>
+        <div class="m-wont"><small>W</small><b>Won't have this time</b><p>Fica para outra vez, de forma combinada.</p></div>
+      </div>
+      <h2>Outras práticas</h2>
+      <ul>
+        <li><strong>Prototipação:</strong> versões iniciais do produto para que usuários testem e opinem cedo.</li>
+        <li><strong>Workshops facilitados:</strong> encontros que reúnem negócio e tecnologia para decidir em conjunto.</li>
+        <li><strong>Modelagem:</strong> diagramas que ajudam a todos a entender sistemas complexos.</li>
+        <li><strong>Desenvolvimento iterativo:</strong> ciclos repetidos de construir, mostrar e ajustar.</li>
+      </ul>
+      <h2>Papéis principais</h2>
+      <ul class="roles">
+        <li><b>Patrocinador executivo</b>Responsável pelo investimento e pelas decisões de maior nível.</li>
+        <li><b>Visionário</b>Garante que o projeto siga o objetivo de negócio.</li>
+        <li><b>Usuário embaixador</b>Leva o conhecimento dos usuários para a equipe e traz feedback.</li>
+        <li><b>Gerente de projeto</b>Planeja e acompanha o andamento.</li>
+        <li><b>Líder de equipe</b>Coordena o dia a dia do time de desenvolvimento.</li>
+        <li><b>Desenvolvedor e testador</b>Constroem e validam a solução.</li>
+      </ul>
+    </article>
+
+    <article data-view="vantagens" data-title="Vantagens e desvantagens" data-summary="Pontos fortes, limites e quando faz sentido usar.">
+      <p class="eyebrow">Avaliação</p>
+      <h1>Vantagens, desvantagens e quando usar</h1>
+      <div class="two-col">
+        <div>
+          <h3>Vantagens</h3>
+          <ul>
+            <li>A funcionalidade básica do produto chega rápido.</li>
+            <li>Desenvolvedores têm acesso fácil aos usuários finais.</li>
+            <li>Projetos tendem a terminar no prazo.</li>
+            <li>A qualidade é combinada e testada desde o início.</li>
+            <li>Há governança clara, com papéis e responsabilidades.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Desvantagens</h3>
+          <ul>
+            <li>Pode exigir uma mudança grande na cultura da empresa.</li>
+            <li>A adoção tem custo, com treinamento e adaptação.</li>
+            <li>Costuma não ser ideal para organizações pequenas.</li>
+            <li>Exige envolvimento constante do negócio e equipe treinada.</li>
+          </ul>
+        </div>
+      </div>
+      <h2>Quando usar</h2>
+      <p>O DSDM funciona bem em projetos com prazo e orçamento fixos, mas com escopo flexível, e em ambientes com várias partes interessadas, nos quais é preciso acompanhar e prestar contas. Também ajuda em projetos mais complexos, que pedem mais controle.</p>
+      <p>Para times pequenos, projetos simples ou contextos sem disponibilidade dos usuários para participar, métodos mais leves podem ser mais adequados.</p>
+    </article>
+
+    <article data-view="quadro-resumo" data-title="Quadro resumo" data-summary="Tudo sobre o DSDM em uma tabela.">
+      <p class="eyebrow">Síntese</p>
+      <h1>Quadro resumo do DSDM</h1>
+      <div class="table-scroll">
+        <table>
+          <tbody>
+            <tr><th>Nome</th><td>Dynamic Systems Development Method (DSDM), também chamado de DSDM Agile Project Framework</td></tr>
+            <tr><th>Origem</th><td>1994, a partir de gerentes que usavam RAD e queriam mais disciplina e governança</td></tr>
+            <tr><th>Foco</th><td>Entregar valor ao negócio no prazo e no orçamento, com qualidade acordada</td></tr>
+            <tr><th>Abrangência</th><td>Projeto inteiro, do pré-projeto ao pós-projeto, e não só a programação</td></tr>
+            <tr><th>Ciclo de vida</th><td>Pré-projeto, viabilidade, fundamentos, desenvolvimento evolutivo, implantação e pós-projeto</td></tr>
+            <tr><th>Princípios</th><td>Oito: necessidade do negócio, prazo, colaboração, qualidade, incremento, iteração, comunicação e controle</td></tr>
+            <tr><th>Técnicas</th><td>Timeboxing, MoSCoW, prototipação, workshops facilitados e modelagem</td></tr>
+            <tr><th>Papéis</th><td>Patrocinador, visionário, usuário embaixador, gerente de projeto, líder de equipe, desenvolvedores e testadores</td></tr>
+            <tr><th>O que é fixo</th><td>Prazo, custo e qualidade</td></tr>
+            <tr><th>O que varia</th><td>O conjunto de funcionalidades entregues</td></tr>
+            <tr><th>Pontos fortes</th><td>Entrega rápida do essencial, contato com usuários, previsibilidade de prazo, governança</td></tr>
+            <tr><th>Limitações</th><td>Mudança cultural, custo de adoção, menos indicado para organizações pequenas</td></tr>
+            <tr><th>Melhor uso</th><td>Projetos com prazo fixo, vários envolvidos e necessidade de controle</td></tr>
+            <tr><th>Relação com outros métodos</th><td>Pode ser combinado com Scrum, que cuida da entrega do produto, enquanto o DSDM cuida da gestão do projeto</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article data-view="conclusao" data-title="Conclusão e referências" data-summary="O que aprendemos e as fontes consultadas.">
+      <p class="eyebrow">Fechamento</p>
+      <h1>Conclusão e referências</h1>
+      <p>O DSDM mostra que agilidade e organização podem andar juntas. Ao fixar prazo, custo e qualidade e deixar o escopo flexível, ele protege o que mais importa para o negócio e entrega valor cedo. Em troca, pede equipe treinada, participação ativa dos usuários e disposição da organização para mudar a forma de trabalhar.</p>
+      <p>Para quem estuda desenvolvimento de sistemas, o método é útil por mostrar uma visão de projeto completa e por trazer práticas, como timeboxing e MoSCoW, que podem ser aproveitadas mesmo em outros métodos.</p>
+      <h2>Referências</h2>
+      <ul class="refs">
+        <li>AGILE BUSINESS CONSORTIUM. <strong>What is DSDM?</strong> Disponível em: https://www.agilebusiness.org/what-is-dsdm. Acesso em: 9 nov. 2026.</li>
+        <li>AGILE BUSINESS CONSORTIUM. <strong>Chapter 3: Philosophy and Fundamentals.</strong> DSDM Agile Project Framework Handbook. Disponível em: https://www.agilebusiness.org/page/ProjectFramework_03_PhilosophyFundamentals. Acesso em: 9 nov. 2026.</li>
+        <li>AGILE BUSINESS CONSORTIUM. <strong>Chapter 4: Principles.</strong> DSDM Agile Project Framework Handbook. Disponível em: https://www.agilebusiness.org/page/ProjectFramework_04_Principles. Acesso em: 9 nov. 2026.</li>
+        <li>APMG INTERNATIONAL. <strong>O que é Gerenciamento Ágil de Projetos?</strong> Disponível em: https://apmg-international.com/pt-br/article/o-que-e-gerenciamento-de-projetos-agil. Acesso em: 9 nov. 2026.</li>
+        <li>KNOWLEDGE TRAIN. <strong>The DSDM Principles.</strong> Disponível em: https://www.knowledgetrain.co.uk/agile/the-dsdm-principles. Acesso em: 9 nov. 2026.</li>
+        <li>PONTOTEL. <strong>DSDM.</strong> Disponível em: https://www.pontotel.com.br/dsdm/. Acesso em: 9 nov. 2026.</li>
+        <li>PRODUCTPLAN. <strong>Dynamic Systems Development Method (DSDM).</strong> Disponível em: https://www.productplan.com/glossary/dynamic-systems-development-method. Acesso em: 9 nov. 2026.</li>
+        <li>TOOLSHERO. <strong>Dynamic Systems Development Method (DSDM) explained.</strong> Disponível em: https://www.toolshero.com/information-technology/dynamic-systems-development-method/. Acesso em: 9 nov. 2026.</li>
+      </ul>
+    </article>
+
+    <nav class="pager" id="pager" aria-label="Navegação entre posts"></nav>
+  </main>
+
+  <footer class="site-foot">Equipe 6 · Engenharia de Software II · IFPR Umuarama · 2026</footer>
+</div>
+
+<script>
+(function () {
+  var views = Array.prototype.slice.call(document.querySelectorAll('[data-view]'));
+  var ids = views.map(function (v) { return v.getAttribute('data-view'); });
+  var menu = document.getElementById('menu');
+  var list = document.getElementById('home-list');
+  var pager = document.getElementById('pager');
+
+  views.forEach(function (v) {
+    var id = v.getAttribute('data-view');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.textContent = v.getAttribute('data-title');
+    a.setAttribute('data-id', id);
+    menu.appendChild(a);
+    if (id !== 'inicio') {
+      var li = document.createElement('li');
+      li.innerHTML = '<a href="#' + id + '"><strong></strong><span></span></a>';
+      li.querySelector('strong').textContent = v.getAttribute('data-title');
+      li.querySelector('span').textContent = v.getAttribute('data-summary');
+      list.appendChild(li);
+    }
+  });
+
+  function show() {
+    var h = (location.hash || '').replace('#', '') || 'inicio';
+    if (ids.indexOf(h) === -1) h = 'inicio';
+    views.forEach(function (v) { v.hidden = v.getAttribute('data-view') !== h; });
+    Array.prototype.forEach.call(menu.querySelectorAll('a'), function (a) {
+      if (a.getAttribute('data-id') === h) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    var i = ids.indexOf(h);
+    pager.innerHTML = '';
+    pager.hidden = (h === 'inicio');
+    if (h !== 'inicio') {
+      var prev = document.createElement('a');
+      prev.href = '#' + ids[i - 1];
+      prev.textContent = '← ' + views[i - 1].getAttribute('data-title');
+      pager.appendChild(prev);
+      if (i < ids.length - 1) {
+        var next = document.createElement('a');
+        next.href = '#' + ids[i + 1];
+        next.textContent = views[i + 1].getAttribute('data-title') + ' →';
+        next.style.marginLeft = 'auto';
+        next.style.textAlign = 'right';
+        pager.appendChild(next);
+      }
+    }
+    try { window.scrollTo(0, 0); } catch (e) {}
+  }
+  window.addEventListener('hashchange', show);
+  show();
+})();
+</script>
+
+</body></html>
